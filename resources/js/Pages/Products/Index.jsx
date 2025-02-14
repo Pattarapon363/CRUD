@@ -1,7 +1,15 @@
 import React from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 
 export default function Index({ products }) {
+
+    // delete function
+    const handleDelete = (ProductID) => {
+        if (confirm('Are you sure you want to delete this product?')) {
+            router.delete(`/products/${ProductID}`);
+        }
+    };
+
     return (
         <>
             <Head title="รายการสินค้า" />
@@ -9,6 +17,16 @@ export default function Index({ products }) {
             <div className="py-12">
 
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    {/* Add a button to navigate to the product creation page */}
+                    <div className="mb-6">
+                        <Link
+                            href="/products/create"
+                            className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors"
+                        >
+                            เพิ่มสินค้าใหม่
+                        </Link>
+                    </div>
+
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
@@ -53,22 +71,37 @@ export default function Index({ products }) {
                                                 <span className="text-lg font-bold text-indigo-600">
                                                     ฿{product.price.toLocaleString()}
                                                 </span>
-                                                <span className={`px-2 py-1 text-xs rounded-full ${
-                                                    product.stock > 10
+                                                <span className={`px-2 py-1 text-xs rounded-full ${product.stock > 10
                                                         ? 'bg-green-100 text-green-800'
                                                         : product.stock > 0
                                                             ? 'bg-yellow-100 text-yellow-800'
                                                             : 'bg-red-100 text-red-800'
-                                                }`}>
+                                                    }`}>
                                                     {product.stock > 0 ? `คงเหลือ ${product.stock}` : 'สินค้าหมด'}
                                                 </span>
                                             </div>
-                                            <Link
-                                                href={route('products.show', product.id)}
-                                                className="mt-4 block w-full text-center bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors"
-                                            >
-                                                ดูรายละเอียด
-                                            </Link>
+                                            <div className="flex flex-col space-y-2 mt-4">
+                                                <Link
+                                                    href={`/products/${product.id}`}
+                                                    className="text-center bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                                                >
+                                                    ดูรายละเอียด
+                                                </Link>
+                                                <div className="flex space-x-2">
+                                                    <Link
+                                                        href={`/products/${product.id}/edit`}
+                                                        className="flex-1 text-center bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => handleDelete(product.id)}
+                                                        className="flex-1 text-center bg-red-500 text-white py-2 rounded-md hover:bg-red-600 transition-colors"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
